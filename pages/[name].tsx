@@ -4,26 +4,11 @@ import Images from "next/image";
 import { css } from "@emotion/react";
 import { usePokemonDetail } from "../shared/hooks";
 import Layout from "../components/layout";
-import { cardBackground } from "../shared/helpers";
+import { cardBackground, stylesUtil } from "../shared/helpers";
 import { useState } from "react";
+import Badges from "../components/badges";
 
 const styles = {
-  chevronStyles: css`
-    margin-bottom: 8px;
-    &::before {
-      border-style: solid;
-      border-width: 0.25em 0.25em 0 0;
-      content: "";
-      display: inline-block;
-      height: 0.45em;
-      left: 0.15em;
-      position: relative;
-      top: 0.15em;
-      transform: rotate(-135deg);
-      vertical-align: top;
-      width: 0.45em;
-    }
-  `,
   pokemonTitleStyles: css`
     text-transform: capitalize;
   `,
@@ -77,16 +62,6 @@ const styles = {
     margin-top: 12px;
     text-align: center;
   `,
-  chipStyles: css`
-    border-radius: 10px;
-    color: #fff;
-    margin-right: 5px;
-    padding: 4px 8px;
-  `,
-  chipWrapperStyles: css`
-    display: flex;
-    margin-top: 5px;
-  `,
   stateItemStyles: css`
     display: flex;
   `,
@@ -135,6 +110,14 @@ const PokemonName = () => {
   const abilities = data?.abilities.map(({ ability }: any) => ability.name);
   const abilitiesStr = abilities?.join(", ");
 
+  if (!data) {
+    return (
+      <Layout>
+        <p>Loading...</p>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div
@@ -147,32 +130,14 @@ const PokemonName = () => {
           <div css={styles.contentTopStyles}>
             <Link href="/">
               <a data-test-id="chevron">
-                <span css={styles.chevronStyles}></span>
+                <span css={stylesUtil.chevronStyles}></span>
               </a>
             </Link>
             <h1>#{data?.id}</h1>
             <h1 css={styles.pokemonTitleStyles} data-test-id="name">
               {data?.name}
             </h1>
-            <div css={styles.chipWrapperStyles}>
-              {data?.types.map(({ type }: any) => {
-                return (
-                  <div
-                    key={type.name}
-                    css={[
-                      styles.chipStyles,
-                      css`
-                        background-color: ${cardBackground[
-                          type.name as keyof typeof cardBackground
-                        ]};
-                      `,
-                    ]}
-                  >
-                    {type.name}
-                  </div>
-                );
-              })}
-            </div>
+            {data?.types ? <Badges data={data?.types} /> : null}
             <div css={styles.imageWrapperStyles}>
               <Images
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data?.id}.png`}

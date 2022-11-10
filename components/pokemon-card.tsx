@@ -1,11 +1,14 @@
 import { css } from "@emotion/react";
 import Images from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { cardBackground } from "../shared/helpers";
 import { PokemonDetail } from "../shared/interfaces";
 
 interface PokemonCardProps {
   data: PokemonDetail;
+  isCompare: boolean;
+  onChangeValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const cardStyles = css`
@@ -13,6 +16,7 @@ const cardStyles = css`
   height: 100%;
   min-height: 246px;
   padding: 12px;
+  position: relative;
   width: calc(50% - 6px);
 `;
 
@@ -39,61 +43,83 @@ const pokemonTitleStyles = css`
   text-transform: capitalize;
 `;
 
-const PokemonCard = ({ data }: PokemonCardProps) => {
+const checkboxStyles = css`
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  height: 25px;
+  width: 25px;
+`;
+
+const PokemonCard = ({ data, isCompare, onChangeValue }: PokemonCardProps) => {
   console.log(data);
   const pokemonType = data.types[0].type.name;
   const backgroundColor =
     cardBackground[pokemonType as keyof typeof cardBackground];
 
+  const router = useRouter();
+
+  const navigateToDetail = () => {
+    router.push(`/${data.name}`);
+  };
+
   return (
-    <Link href={`/${data.name}`}>
-      <a
+    <article
+      css={[
+        cardStyles,
+        css`
+          background-color: ${backgroundColor}80;
+        `,
+      ]}
+    >
+      {isCompare ? (
+        <input
+          css={checkboxStyles}
+          type="checkbox"
+          id={data.name}
+          name={data.name}
+          value={data.name}
+          onChange={onChangeValue}
+        />
+      ) : null}
+      <div
         css={css`
           cursor: pointer;
-          display: contents;
         `}
+        onClick={navigateToDetail}
       >
-        <article
-          css={[
-            cardStyles,
-            css`
-              background-color: ${backgroundColor}80;
-            `,
-          ]}
-        >
-          <div css={imageWrapperStyles}>
-            <Images
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`}
-              alt="test"
-              width="162px"
-              height="162px"
-              loading="lazy"
-            />
-          </div>
-          <p>#{data.id}</p>
-          <h4 css={pokemonTitleStyles}>{data.name}</h4>
-          <div css={chipWrapperStyles}>
-            {data.types.map(({ type }) => {
-              return (
-                <div
-                  key={type.name}
-                  css={[
-                    chipStyles,
-                    css`
-                      background-color: ${cardBackground[
-                        type.name as keyof typeof cardBackground
-                      ]};
-                    `,
-                  ]}
-                >
-                  {type.name}
-                </div>
-              );
-            })}
-          </div>
-        </article>
-      </a>
-    </Link>
+        <div css={imageWrapperStyles}>
+          <Images
+            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`}
+            alt="test"
+            width="162px"
+            height="162px"
+            loading="lazy"
+          />
+        </div>
+        <p>#{data.id}</p>
+        <h4 css={pokemonTitleStyles}>{data.name}</h4>
+        <div css={chipWrapperStyles}>
+          {data.types.map(({ type }) => {
+            return (
+              <div
+                key={type.name}
+                css={[
+                  chipStyles,
+                  css`
+                    background-color: ${cardBackground[
+                      type.name as keyof typeof cardBackground
+                    ]};
+                  `,
+                ]}
+              >
+                {type.name}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </article>
   );
 };
 

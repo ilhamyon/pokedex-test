@@ -1,3 +1,5 @@
+import { css } from "@emotion/react";
+
 export const cardBackground = {
   normal: "#A8A77A",
   fire: "#EE8130",
@@ -17,4 +19,35 @@ export const cardBackground = {
   dark: "#705746",
   steel: "#B7B7CE",
   fairy: "#D685AD",
+};
+
+export const stylesUtil = {
+  chevronStyles: css`
+    margin-bottom: 8px;
+    &::before {
+      border-style: solid;
+      border-width: 0.25em 0.25em 0 0;
+      content: "";
+      display: inline-block;
+      height: 0.45em;
+      left: 0.15em;
+      position: relative;
+      top: 0.15em;
+      transform: rotate(-135deg);
+      vertical-align: top;
+      width: 0.45em;
+    }
+  `,
+  compareCard: css`
+    border-radius: 20px;
+    box-shadow: 2px 4px 15px 0 rgb(0 0 0 / 25%);
+    margin-top: 40px;
+    padding: 20px;
+  `,
+  titleStyles: css`
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 24px;
+    margin-bottom: 20px;
+  `,
 };
