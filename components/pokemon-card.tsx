@@ -49,6 +49,7 @@ const checkboxStyles = css`
   top: 15px;
   height: 25px;
   width: 25px;
+  z-index: 2;
 `;
 
 const PokemonCard = ({ data, isCompare, onChangeValue }: PokemonCardProps) => {
