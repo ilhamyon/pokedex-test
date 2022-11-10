@@ -1,8 +1,10 @@
+import { useState } from "react";
 import useSWR from "swr";
 
 export const usePokemons = () => {
+  const [limit, setLimit] = useState<number>(20);
   const { data, error } = useSWR(
-    "https://pokeapi.co/api/v2/pokemon?limit=40",
+    `https://pokeapi.co/api/v2/pokemon?limit=${limit}`,
     (apiURL: string) =>
       fetch(apiURL)
         .then((res) => {
@@ -22,6 +24,19 @@ export const usePokemons = () => {
 
   return {
     data,
+    setLimit,
     error,
   };
+};
+
+export const usePokemonDetail = (name: string) => {
+  const { data, error } = useSWR(
+    `https://pokeapi.co/api/v2/pokemon/${name}`,
+    (apiURL: string) => fetch(apiURL).then((res) => res.json())
+  );
+
+  return {
+    data,
+    error,
+  } as const;
 };

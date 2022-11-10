@@ -24,3 +24,7 @@ h6,
 p {
   margin: 0;
 }
+
+.selected-tab {
+  border-bottom: 1px solid #000;
+}
